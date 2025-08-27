@@ -37,6 +37,13 @@ export default function Search() {
 
     const dSearch = debouncer(handleChange, 500);
 
+    const goToSearch = (elem: HTMLDivElement) => {
+        const value = elem.dataset?.value || '';
+        if(value) {
+            console.log(value);
+        };
+    }
+
     return (
         <Command className="bg-black/50 rounded-lg w-full text-white">
             <CommandInput
@@ -46,7 +53,7 @@ export default function Search() {
             />
             {suggestions?.length > 0 && (
                 <CommandList className="bg-white">
-                    <CommandGroup heading="Suggestions">
+                    <CommandGroup heading="Suggestions" onClick={(e) => goToSearch(e.target as HTMLDivElement)}>
                         {suggestions.map((c: Country) => (
                             <CommandItem key={c?.name?.official}>
                                 {c?.name?.official}
