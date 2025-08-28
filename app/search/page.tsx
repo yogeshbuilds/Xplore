@@ -2,31 +2,42 @@
 
 import CountryCard, { SkeletonCards } from "@/components/Card";
 import type { Country } from "@/components/Search";
+import type { FormEvent } from "react";
 import { lazy } from "react";
 import { httpHelper } from "@/lib/utils";
-import { useSearchParams } from 'next/navigation'
 import { Suspense, useEffect, useState } from "react";
+import useSearch from "@/zustand/store";
 const Search = lazy(() => import('@/components/Search'));
 
-
 export default function SearchPage() {
-    const params = useSearchParams();
-    const query = params.get('query') || '';
+    const { query } = useSearch() as { query: string };
     const [countries, setCountries] = useState<Country[]>([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        async function fetchCountries(query: string) {
-            if (query) {
-                const results = await httpHelper(`/name/${query}`);
-                if (Array.isArray(results)) {
-                    setCountries(results);
-                }
+    async function fetchCountries(query: string) {
+        if (query) {
+            const results = await httpHelper(`/name/${query}`);
+            if (Array.isArray(results)) {
+                setCountries(results);
             }
+        }
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        if (query) {
+            fetchCountries(query);
+        } else {
             setLoading(false);
-        };
-        fetchCountries(query);
-    }, [query]);
+        }
+    });
+
+    const formSubmit = (e: FormEvent) => {
+        e.preventDefault()
+        if (query) {
+            fetchCountries(query);
+        }
+    }
 
     return (
         <div>
@@ -38,7 +49,7 @@ export default function SearchPage() {
                     </div>
                     <div className="w-[50%] p-2 text-white">
                         <Suspense fallback='loading'>
-                            <Search />
+                            <Search page="search" submitForm={formSubmit} />
                         </Suspense>
                     </div>
                     <div className="w-[20%]" />
@@ -60,9 +71,8 @@ export default function SearchPage() {
                     </div>
                 )}
                 {!loading && countries.length === 0 && (
-                    <h2>Soemthing went wrong!!</h2>
+                    <h2>Search for your favourite country...</h2>
                 )}
-
             </div>
         </div>
     )

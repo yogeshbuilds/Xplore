@@ -37,7 +37,7 @@ export default function CountryCard({ countryData }: CountryProps ) {
             <CardHeader>
                 <CardTitle>Card Title</CardTitle>
                 <CardDescription>
-                    <Image lazyRoot="" src={countryData.flags.png} alt={countryData.flags.alt || 'alt'} height={125} width={250} />
+                    <Image lazyRoot="" src={countryData.flags.png} alt={countryData.flags.alt || 'alt'} height={125} width={320} />
                 </CardDescription>
                 <CardAction>Card Action</CardAction>
             </CardHeader>

@@ -7,10 +7,9 @@ import {
     CommandItem,
     CommandList,
 } from "@/components/ui/command";
-import type { FormEvent } from "react";
-import { useEffect, useRef, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 import { debouncer, httpHelper } from "@/lib/utils";
-import { useRouter } from 'next/navigation'
+import useSearch from "@/zustand/store";
 
 export interface Country {
     name: {
@@ -22,18 +21,23 @@ export interface Country {
     }
 }
 
-export default function Search() {
+interface SearchProps {
+    page: 'index' | 'search';
+    submitForm: (e: FormEvent) => void;
+}
+
+export default function Search(props: SearchProps) {
+    const { page, submitForm } = props;
     const [suggestions, setSuggestions] = useState<Country[]>([]);
     const searchRef = useRef(null);
-    const [blur, setBlur] = useState(false);
-    const router = useRouter();
-    const [inputVal, setInputVal] = useState('');
+    const { query, setQuery } = useSearch() as { query: string, setQuery: (val: string) => void };
+    const [focus, setFocus] = useState(page === 'index');
 
     useEffect(() => {
-        if (searchRef.current && typeof (searchRef.current as HTMLInputElement).focus === "function") {
+        if (page === 'index' && searchRef.current && typeof (searchRef.current as HTMLInputElement).focus === "function") {
             (searchRef.current as HTMLInputElement).focus();
         }
-    }, []);
+    }, [page]);
 
     const handleChange = async (val: string) => {
         if (val) {
@@ -53,28 +57,25 @@ export default function Search() {
         };
     }
 
-    const submitForm = (e: FormEvent) => {
-        e.preventDefault()
-        router.push(`/search?query=${inputVal}`);
-    }
-
     return (
         <Command className="bg-black/50 rounded-lg w-full text-white">
             <CommandInput
                 ref={searchRef}
-                value={inputVal}
+                value={query}
                 placeholder="Serach for a country..."
-                onChangeCapture={(e) => { setInputVal((e.target as HTMLInputElement).value); dSearch((e.target as HTMLInputElement).value); }}
-                onBlur={() => setBlur(true)}
-                onFocus={() => setBlur(false)}
+                onValueChange={(val) => { setQuery(val); dSearch(val); }}
+                onBlur={() => setFocus(false)}
+                onFocus={() => setFocus(true)}
+                autoFocus={focus}
                 onKeyDown={(e) => {
                     if (e.key === "Enter") {
                         e.preventDefault();
                         submitForm(e);
+                        setFocus(false);
                     }
                 }}
             />
-            {(suggestions?.length > 0 && !blur) && (
+            {(suggestions?.length > 0 && focus) && (
                 <CommandList className="bg-white">
                     <CommandGroup heading="Suggestions" onClick={(e) => goToSearch(e.target as HTMLDivElement)}>
                         {suggestions.map((c: Country) => (
