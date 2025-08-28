@@ -13,12 +13,19 @@ import useSearch from "@/zustand/store";
 
 export interface Country {
     name: {
+        common: string;
         official: string;
     };
+    capital: string[];
+    fifa: string;
+    currencies: {
+        [key: string]: { name: string, symbol: string };
+    };
     flags: {
-        png: string,
-        alt: string
-    }
+        png: string;
+        alt: string;
+    };
+    region: string;
 }
 
 interface SearchProps {

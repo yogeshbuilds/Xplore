@@ -30,7 +30,7 @@ export default function SearchPage() {
         } else {
             setLoading(false);
         }
-    });
+    }, []);
 
     const formSubmit = (e: FormEvent) => {
         e.preventDefault()
@@ -57,17 +57,16 @@ export default function SearchPage() {
                 <div className="bg-border -mx-1 h-px" />
             </div>
             <div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
                     {!loading && countries.length > 0 && (
                         countries.map((c: Country) => <CountryCard key={c.name.official} countryData={c} />)
                     )}
                 </div>
                 {loading && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-                        <SkeletonCards />
-                        <SkeletonCards />
-                        <SkeletonCards />
-                        <SkeletonCards />
+                        {Array.from({ length: 4 }).map((_, idx) => (
+                            <SkeletonCards key={idx} />
+                        ))}
                     </div>
                 )}
                 {!loading && countries.length === 0 && (

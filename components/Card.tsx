@@ -1,14 +1,12 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import {
     Card,
-    CardAction,
     CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
-    CardTitle,
 } from "@/components/ui/card";
 import Image from "next/image";
+import Link from "next/link";
 
 export function SkeletonCards() {
     return (
@@ -23,30 +21,45 @@ export function SkeletonCards() {
 }
 interface CountryProps {
     countryData: {
+        name: {
+            common: string;
+            official: string;
+        };
+        capital: string[];
+        fifa: string;
+        currencies: {
+            [key: string]: { name: string, symbol: string };
+        };
         flags: {
-            png: string,
-            alt: string
-        }
+            png: string;
+            alt: string;
+        };
+        region: string;
     }
 }
 
 export default function CountryCard({ countryData }: CountryProps ) {
-
+    const currencyNames = Object.values(countryData?.currencies || {})
+        .map((c) => `${c?.name} (${c.symbol})`)
+        .filter(Boolean)
+        .join(", ");
     return (
         <Card>
+            <Link href={`/search/${countryData.name.official}`}>
             <CardHeader>
-                <CardTitle>Card Title</CardTitle>
                 <CardDescription>
-                    <Image lazyRoot="" src={countryData.flags.png} alt={countryData.flags.alt || 'alt'} height={125} width={320} />
+                    <Image className="border rounder-2" lazyRoot="" src={countryData.flags.png} alt={countryData.flags.alt || 'alt'} height={125} width={320} />
                 </CardDescription>
-                <CardAction>Card Action</CardAction>
             </CardHeader>
             <CardContent>
-                <p>Card Content</p>
+                <p className="font-bold">{countryData.name.common}<span>({countryData.name.official})</span></p>
+                <p>Capital - {countryData?.capital?.[0]}</p>
+                <p>
+                    Currency - {currencyNames || 'N/A'}
+                </p>
+                <p>Region - {countryData.region}</p>
             </CardContent>
-            <CardFooter>
-                <p>Card Footer</p>
-            </CardFooter>
+            </Link>
         </Card>
     )
 }
