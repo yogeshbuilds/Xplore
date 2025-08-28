@@ -6,19 +6,28 @@ import {
     CommandInput,
     CommandItem,
     CommandList,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
+import type { FormEvent } from "react";
 import { useEffect, useRef, useState } from "react";
 import { debouncer, httpHelper } from "@/lib/utils";
+import { useRouter } from 'next/navigation'
 
-interface Country {
+export interface Country {
     name: {
         official: string;
     };
+    flags: {
+        png: string,
+        alt: string
+    }
 }
 
 export default function Search() {
     const [suggestions, setSuggestions] = useState<Country[]>([]);
     const searchRef = useRef(null);
+    const [blur, setBlur] = useState(false);
+    const router = useRouter();
+    const [inputVal, setInputVal] = useState('');
 
     useEffect(() => {
         if (searchRef.current && typeof (searchRef.current as HTMLInputElement).focus === "function") {
@@ -39,19 +48,33 @@ export default function Search() {
 
     const goToSearch = (elem: HTMLDivElement) => {
         const value = elem.dataset?.value || '';
-        if(value) {
-            console.log(value);
+        if (value) {
+            // go to coutry details page
         };
+    }
+
+    const submitForm = (e: FormEvent) => {
+        e.preventDefault()
+        router.push(`/search?query=${inputVal}`);
     }
 
     return (
         <Command className="bg-black/50 rounded-lg w-full text-white">
             <CommandInput
                 ref={searchRef}
+                value={inputVal}
                 placeholder="Serach for a country..."
-                onChangeCapture={(e) => dSearch((e.target as HTMLInputElement).value)}
+                onChangeCapture={(e) => { setInputVal((e.target as HTMLInputElement).value); dSearch((e.target as HTMLInputElement).value); }}
+                onBlur={() => setBlur(true)}
+                onFocus={() => setBlur(false)}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                        e.preventDefault();
+                        submitForm(e);
+                    }
+                }}
             />
-            {suggestions?.length > 0 && (
+            {(suggestions?.length > 0 && !blur) && (
                 <CommandList className="bg-white">
                     <CommandGroup heading="Suggestions" onClick={(e) => goToSearch(e.target as HTMLDivElement)}>
                         {suggestions.map((c: Country) => (
