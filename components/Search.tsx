@@ -80,7 +80,7 @@ export default function Search(props: SearchProps) {
                         // Add a small delay to allow click events to process first
                         setTimeout(() => setFocus(false), 150);
                     }}
-                    onFocus={(e) => {e.stopPropagation(); setFocus(true)}}
+                    onFocus={(e) => {setFocus(true); e.stopPropagation() }}
                     onKeyDown={(e) => {
                         if (e.key === "Enter") {
                             e.preventDefault();

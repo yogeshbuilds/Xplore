@@ -13,6 +13,7 @@ export default function SearchPage() {
     const { query } = useSearch() as { query: string };
     const [countries, setCountries] = useState<Country[]>([]);
     const [loading, setLoading] = useState(true);
+    const [visibleCount, setVisibleCount] = useState(12);
 
     async function fetchCountries(query: string) {
         if (query) {
@@ -36,7 +37,12 @@ export default function SearchPage() {
         e.preventDefault()
         if (query) {
             fetchCountries(query);
+            setVisibleCount(12); // Reset to show first 12 when searching
         }
+    }
+
+    const showMore = () => {
+        setVisibleCount(prev => Math.min(prev + 12, countries.length));
     }
 
     return (
@@ -59,7 +65,7 @@ export default function SearchPage() {
             <div className="container mx-auto px-2 py-8">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
                     {!loading && countries.length > 0 && (
-                        countries.map((c: Country) => <CountryCard key={c.name.official} countryData={c} />)
+                        countries.slice(0, visibleCount).map((c: Country) => <CountryCard key={c.name.official} countryData={c} />)
                     )}
                 </div>
                 {loading && (
@@ -70,7 +76,17 @@ export default function SearchPage() {
                     </div>
                 )}
                 {!loading && countries.length === 0 && (
-                    <h2>Search for your favourite country...</h2>
+                    <h1 className="text-center font-bold">Search for your favourite country...</h1>
+                )}
+                {!loading && countries.length > 0 && visibleCount < countries.length && (
+                    <div className="flex justify-center mt-8">
+                        <button
+                            onClick={showMore}
+                            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                        >
+                            Show More ({countries.length - visibleCount} remaining)
+                        </button>
+                    </div>
                 )}
             </div>
         </div>
