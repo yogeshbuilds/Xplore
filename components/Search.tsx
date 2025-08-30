@@ -10,6 +10,7 @@ import {
 import { type FormEvent, useEffect, useRef, useState } from "react";
 import { debouncer, httpHelper } from "@/lib/utils";
 import useSearch from "@/zustand/store";
+import { useRouter } from "next/navigation";
 
 export interface Country {
     name: {
@@ -39,6 +40,7 @@ export default function Search(props: SearchProps) {
     const searchRef = useRef(null);
     const { query, setQuery } = useSearch() as { query: string, setQuery: (val: string) => void };
     const [focus, setFocus] = useState(page === 'index');
+    const router = useRouter();
 
     useEffect(() => {
         if (page === 'index' && searchRef.current && typeof (searchRef.current as HTMLInputElement).focus === "function") {
@@ -60,39 +62,53 @@ export default function Search(props: SearchProps) {
     const goToSearch = (elem: HTMLDivElement) => {
         const value = elem.dataset?.value || '';
         if (value) {
-            // go to coutry details page
+            router.push(`/search/${value}`);
         };
     }
 
     return (
-        <Command className="bg-black/50 rounded-lg w-full text-white">
-            <CommandInput
-                ref={searchRef}
-                value={query}
-                placeholder="Serach for a country..."
-                onValueChange={(val) => { setQuery(val); dSearch(val); }}
-                onBlur={() => setFocus(false)}
-                onFocus={() => setFocus(true)}
-                autoFocus={focus}
-                onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                        e.preventDefault();
-                        submitForm(e);
-                        setFocus(false);
-                    }
-                }}
-            />
-            {(suggestions?.length > 0 && focus) && (
-                <CommandList className="bg-white">
-                    <CommandGroup heading="Suggestions" onClick={(e) => goToSearch(e.target as HTMLDivElement)}>
-                        {suggestions.map((c: Country) => (
-                            <CommandItem key={c?.name?.official}>
-                                {c?.name?.official}
-                            </CommandItem>
-                        ))}
-                    </CommandGroup>
-                </CommandList>
-            )}
-        </Command>
+        <div className="relative w-full">
+            <Command className="bg-black/50 rounded-lg w-full text-white">
+                <CommandInput
+                    ref={searchRef}
+                    value={query}
+                    placeholder="Serach for a country..."
+                    onValueChange={(val) => { setQuery(val); dSearch(val); }}
+                    autoFocus={focus}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            e.preventDefault();
+                            submitForm(e);
+                            setFocus(false);
+                        }
+                    }}
+                />
+                {(suggestions?.length > 0 && focus) && (
+                    <CommandList className="absolute top-full left-0 right-0 z-50 mt-1 bg-white rounded-lg shadow-lg border max-h-80 overflow-y-auto">
+                        <CommandGroup 
+                            heading="Suggestions"
+                            onClick={(e) => {
+                                console.log(e, 'event fired!');
+                                const target = e.target as HTMLElement;
+                                const commandItem = target.closest('[data-value]');
+                                if (commandItem) {
+                                    goToSearch(commandItem as HTMLDivElement);
+                                }
+                            }}
+                        >
+                            {suggestions.map((c: Country) => (
+                                <CommandItem
+                                    key={c?.name?.official} 
+                                    className="text-gray-900 hover:bg-gray-100"
+                                    data-value={c?.name?.official}
+                                >
+                                    {c?.name?.official}
+                                </CommandItem>
+                            ))}
+                        </CommandGroup>
+                    </CommandList>
+                )}
+            </Command>
+        </div>
     )
 }
