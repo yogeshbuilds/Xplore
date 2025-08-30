@@ -56,7 +56,7 @@ export default function SearchPage() {
                 </div>
                 <div className="bg-border -mx-1 h-px" />
             </div>
-            <div>
+            <div className="container mx-auto px-2 py-8">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
                     {!loading && countries.length > 0 && (
                         countries.map((c: Country) => <CountryCard key={c.name.official} countryData={c} />)

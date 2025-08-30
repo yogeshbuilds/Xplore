@@ -75,6 +75,12 @@ export default function Search(props: SearchProps) {
                     placeholder="Serach for a country..."
                     onValueChange={(val) => { setQuery(val); dSearch(val); }}
                     autoFocus={focus}
+                    onBlur={(e) => {
+                        e.stopPropagation();
+                        // Add a small delay to allow click events to process first
+                        setTimeout(() => setFocus(false), 150);
+                    }}
+                    onFocus={(e) => {e.stopPropagation(); setFocus(true)}}
                     onKeyDown={(e) => {
                         if (e.key === "Enter") {
                             e.preventDefault();
@@ -88,13 +94,17 @@ export default function Search(props: SearchProps) {
                         <CommandGroup 
                             heading="Suggestions"
                             onClick={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
                                 console.log(e, 'event fired!');
                                 const target = e.target as HTMLElement;
                                 const commandItem = target.closest('[data-value]');
                                 if (commandItem) {
+                                    setFocus(false); // Immediately hide suggestions
                                     goToSearch(commandItem as HTMLDivElement);
                                 }
-                            }}
+                            }
+                        }
                         >
                             {suggestions.map((c: Country) => (
                                 <CommandItem
