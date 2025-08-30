@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { Country, CountryApiResponse } from './country';
+import { type Country, type CountryApiResponse } from './country';
+import Image from 'next/image';
 
 interface CountryInfoProps {
     initialData?: Country;
@@ -19,7 +20,7 @@ export default function CountryInfo({ initialData }: CountryInfoProps = {}) {
 
     useEffect(() => {
         const fetchCountryData = async (): Promise<void> => {
-            if (!countryName || initialData) return;
+            if (!countryName || initialData) { return };
 
             setLoading(true);
             setError(null);
@@ -113,19 +114,19 @@ export default function CountryInfo({ initialData }: CountryInfoProps = {}) {
     };
 
     const formatLanguages = (langs: Country['languages']): string => {
-        if (!langs) return 'N/A';
+        if (!langs) { return 'N/A' };
         return Object.values(langs).join(', ');
     };
 
     const formatCurrencies = (curr: Country['currencies']): string => {
-        if (!curr) return 'N/A';
+        if (!curr) { return 'N/A' };
         return Object.entries(curr)
             .map(([code, details]) => `${details.name} (${details.symbol || code})`)
             .join(', ');
     };
 
     const getGiniData = (giniObj: Country['gini']): string => {
-        if (!giniObj) return 'N/A';
+        if (!giniObj) { return 'N/A' };
         const years = Object.keys(giniObj).map(Number);
         const latestYear = Math.max(...years);
         return `${giniObj[latestYear]} (${latestYear})`;
@@ -138,7 +139,7 @@ export default function CountryInfo({ initialData }: CountryInfoProps = {}) {
                 <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
                     <div className="flex flex-col lg:flex-row items-center gap-8">
                         <div className="flex-shrink-0">
-                            <img
+                            <Image
                                 src={flags?.png || flags?.svg}
                                 alt={`Flag of ${name?.common}`}
                                 className="w-32 h-24 object-cover rounded-lg shadow-md border"
@@ -161,7 +162,7 @@ export default function CountryInfo({ initialData }: CountryInfoProps = {}) {
                         </div>
                         {coatOfArms?.png && (
                             <div className="flex-shrink-0">
-                                <img
+                                <Image
                                     src={coatOfArms.png}
                                     alt={`Coat of Arms of ${name?.common}`}
                                     className="w-20 h-20 object-contain"

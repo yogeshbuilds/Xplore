@@ -96,7 +96,6 @@ export default function Search(props: SearchProps) {
                             onClick={(e) => {
                                 e.stopPropagation();
                                 e.preventDefault();
-                                console.log(e, 'event fired!');
                                 const target = e.target as HTMLElement;
                                 const commandItem = target.closest('[data-value]');
                                 if (commandItem) {
