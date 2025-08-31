@@ -75,7 +75,11 @@ export default function Search(props: SearchProps) {
                     placeholder="Serach for a country..."
                     onValueChange={(val) => { setQuery(val); dSearch(val); }}
                     autoFocus={focus}
-                    onBlur={(e) => {
+                    aria-label="Search for a country"
+                    aria-expanded={focus && suggestions?.length > 0}
+                    aria-haspopup="listbox"
+                    aria-autocomplete="list"
+                    role="combobox"                    onBlur={(e) => {
                         e.stopPropagation();
                         // Add a small delay to allow click events to process first
                         setTimeout(() => setFocus(false), 150);

@@ -143,6 +143,8 @@ export default function CountryInfo({ initialData }: CountryInfoProps = {}) {
                                 src={flags?.png || flags?.svg}
                                 alt={`Flag of ${name?.common}`}
                                 className="w-32 h-24 object-cover rounded-lg shadow-md border"
+                                width={320}
+                                height={240}
                             />
                         </div>
                         <div className="text-center lg:text-left flex-grow">
@@ -166,6 +168,8 @@ export default function CountryInfo({ initialData }: CountryInfoProps = {}) {
                                     src={coatOfArms.png}
                                     alt={`Coat of Arms of ${name?.common}`}
                                     className="w-20 h-20 object-contain"
+                                    width={200}
+                                    height={200}
                                 />
                             </div>
                         )}
