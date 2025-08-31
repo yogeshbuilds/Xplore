@@ -21,7 +21,7 @@ export default function Search(props: SearchProps) {
     const { page } = props;
     const [suggestions, setSuggestions] = useState<Country[]>([]);
     const searchRef = useRef(null);
-    const { setCountries } = useCountries() as { countries: Country, setCountries: (val: Country[]) => void };
+    const { setCountries } = useCountries() as { setCountries: (val: Country[]) => void };
     const { setVisibleCount } = useCount() as { setVisibleCount: (c: number) => void };
 
     const [focus, setFocus] = useState(page === 'index');
@@ -36,9 +36,9 @@ export default function Search(props: SearchProps) {
     const handleChange = async (val: string) => {
         if (val) {
             const results = await httpHelper(`/name/${val}`);
-            setSuggestions(results);
-        } else {
-            setSuggestions([]);
+            if (Array.isArray(results)) {
+                setSuggestions(results);
+            }
         }
     }
 
@@ -78,8 +78,7 @@ export default function Search(props: SearchProps) {
             <Command className="bg-black/50 rounded-lg w-full text-white">
                 <CommandInput
                     ref={searchRef}
-                    // value={query}
-                    placeholder="Serach for a country..."
+                    placeholder="Search for a country..."
                     onValueChange={(val) => { dSearch(val); }}
                     autoFocus={focus}
                     aria-label="Search for a country"
@@ -89,7 +88,6 @@ export default function Search(props: SearchProps) {
                     role="combobox"
                     onBlur={(e) => {
                         e.stopPropagation();
-                        // Add a small delay to allow click events to process first
                         setTimeout(() => setFocus(false), 150);
                     }}
                     onFocus={(e) => { setFocus(true); e.stopPropagation() }}
@@ -100,6 +98,12 @@ export default function Search(props: SearchProps) {
                             setFocus(false);
                         }
                     }}
+                    className={`
+                    w-full rounded-lg px-4 py-2
+                    text-white placeholder-white
+                    transition
+                    ${page === "index" ? "text-lg md:text-xl py-3 md:py-4" : "text-sm md:text-base"}
+                `}
                 />
                 {(suggestions?.length > 0 && focus) && (
                     <CommandList className="absolute top-full left-0 right-0 z-50 mt-1 bg-white rounded-lg shadow-lg border max-h-80 overflow-y-auto">

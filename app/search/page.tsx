@@ -103,7 +103,7 @@ function SearchPageFallback() {
             </div>
             <div className="container mx-auto px-2 py-8">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-                    {Array.from({ length: 8 }).map((_, idx) => (
+                    {Array.from({ length: 4 }).map((_, idx) => (
                         <SkeletonCards key={idx} />
                     ))}
                 </div>
