@@ -7,6 +7,7 @@ import { Suspense, useEffect, useState } from "react";
 import { useCount, useCountries } from "@/zustand/store";
 import type { Country } from "@/types/country";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 const Search = lazy(() => import('@/components/Search'));
 
 function SearchPageContent() {
@@ -50,13 +51,15 @@ function SearchPageContent() {
             {/* Nav Bar */}
             <div className="w-full h-16 relative">
                 <div className="flex justify-between gap-[5%] w-full">
-                    <div className="w-[20%] p-2 text-center">
-                        <h1 className="text-3xl sm:text-4xl font-bold">Xplore</h1>
+                    <div className="w-[10%] p-2 text-center">
+                        <Link href='/'>
+                            <h1 className="text-xl sm:text-3xl font-bold">Xplore</h1>
+                        </Link>
                     </div>
-                    <div className="w-[50%] p-2 text-white">
+                    <div className="w-full md:w-1/2 p-2 text-white">
                         <Search page="search" />
                     </div>
-                    <div className="w-[20%]" />
+                    <div className="w-[10%] p-2 text-center" />
                 </div>
                 <div className="bg-border -mx-1 h-px" />
             </div>

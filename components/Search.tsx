@@ -79,7 +79,7 @@ export default function Search(props: SearchProps) {
     }
 
     return (
-        <div className="relative w-full">
+        <div className="relative w-[80%] sm:w-full mx-auto">
             <Command className="bg-black/50 rounded-lg w-full text-white">
                 <CommandInput
                     ref={searchRef}
@@ -105,8 +105,7 @@ export default function Search(props: SearchProps) {
                     }}
                     className={`
                     w-full rounded-lg px-4 py-2
-                    text-white placeholder-white
-                    transition
+                    text-white placeholder:text-grey-100
                     ${page === "index" ? "text-lg md:text-xl py-3 md:py-4" : "text-sm md:text-base"}
                 `}
                 />
