@@ -10,15 +10,21 @@ import { useSearchParams } from "next/navigation";
 const Search = lazy(() => import('@/components/Search'));
 
 function SearchPageContent() {
-    const { countries, setCountries } = useCountries() as { countries: Country[], setCountries: (val: Country[]) => void };
+    const { countries, error, setCountries, setError } = useCountries() as
+        { countries: Country[], error: string, setCountries: (val: Country[]) => void, setError: (err: string) => void };
     const { visibleCount, setVisibleCount } = useCount() as { visibleCount: number, setVisibleCount: (c: number) => void };
     const [loading, setLoading] = useState(true);
     const params = useSearchParams();
     const query = params.get('query');
 
     async function fetchCountries(query: string) {
+        setError('');
         if (query) {
             const results = await httpHelper(`/name/${query}`);
+            if (typeof results === 'object' && results.status === 404) {
+                setCountries([]);
+                setError('No Results found. Try a different country');
+            }
             if (Array.isArray(results)) {
                 setCountries(results);
             }
@@ -67,8 +73,11 @@ function SearchPageContent() {
                         ))}
                     </div>
                 )}
-                {!loading && countries.length === 0 && (
+                {!loading && countries.length === 0 && !error && (
                     <h1 className="text-center font-bold">Search for your favourite country...</h1>
+                )}
+                {!loading && error && (
+                    <h1 className="text-center font-bold">{error}</h1>
                 )}
                 {!loading && countries.length > 0 && visibleCount < countries.length && (
                     <div className="flex justify-center mt-8">

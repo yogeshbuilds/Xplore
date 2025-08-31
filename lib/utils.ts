@@ -18,9 +18,14 @@ export const debouncer = (func: (v: string) => void, time: number) => {
 };
 
 export const httpHelper = async (endpoint: string) => {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-  const url = baseUrl + endpoint;
-  const result =  await fetch(url);
-  const data = await result.json();
-  return data;
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+    const url = baseUrl + endpoint;
+    const result = await fetch(url);
+    const data = await result.json();
+    return data;
+  } catch (error) {
+    console.error('Error in httpHelper:', error);
+    return [];
+  }
 }

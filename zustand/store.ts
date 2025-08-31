@@ -8,7 +8,9 @@ import { create } from "zustand";
 
 const useCountries = create((set) => ({
     countries: [],
+    error: '',
     setCountries: (country: Country[]) => set({ countries: country}),
+    setError: (error: string) => set({ error: error }),
 }));
 
 const useCount = create((set) => ({

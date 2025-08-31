@@ -21,7 +21,7 @@ export default function Search(props: SearchProps) {
     const { page } = props;
     const [suggestions, setSuggestions] = useState<Country[]>([]);
     const searchRef = useRef(null);
-    const { setCountries } = useCountries() as { setCountries: (val: Country[]) => void };
+    const { setCountries, setError } = useCountries() as { setCountries: (val: Country[]) => void, setError: (err: string) => void };
     const { setVisibleCount } = useCount() as { setVisibleCount: (c: number) => void };
 
     const [focus, setFocus] = useState(page === 'index');
@@ -52,8 +52,13 @@ export default function Search(props: SearchProps) {
     }
 
     async function fetchCountries(query: string) {
+        setError('');
         if (query) {
             const results = await httpHelper(`/name/${query}`);
+            if (typeof results === 'object' && results.status === 404) {
+                setCountries([]);
+                setError('No Results found. Try a different country');
+            }
             if (Array.isArray(results)) {
                 setCountries(results);
             }
