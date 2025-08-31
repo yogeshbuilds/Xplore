@@ -44,7 +44,7 @@ export default function CountryInfo({ initialData }: CountryInfoProps = {}) {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+            <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center">
                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
                     <p className="text-gray-600">Loading country information...</p>
@@ -55,7 +55,7 @@ export default function CountryInfo({ initialData }: CountryInfoProps = {}) {
 
     if (error) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-red-50 to-pink-100 flex items-center justify-center">
+            <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center p-8 bg-white rounded-lg shadow-lg max-w-md">
                     <div className="text-red-500 text-6xl mb-4">⚠️</div>
                     <h2 className="text-2xl font-bold text-red-700 mb-2">Error</h2>
@@ -73,7 +73,7 @@ export default function CountryInfo({ initialData }: CountryInfoProps = {}) {
 
     if (!countryData) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-gray-50 to-slate-100 flex items-center justify-center">
+            <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center p-8 bg-white rounded-lg shadow-lg max-w-md">
                     <div className="text-gray-400 text-6xl mb-4">🌍</div>
                     <h2 className="text-2xl font-bold text-gray-700 mb-2">Country Not Found</h2>
@@ -133,7 +133,7 @@ export default function CountryInfo({ initialData }: CountryInfoProps = {}) {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+        <div className="min-h-screen via-white to-indigo-50">
             <div className="container mx-auto px-4 py-8">
                 {/* Header Section */}
                 <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
@@ -142,9 +142,9 @@ export default function CountryInfo({ initialData }: CountryInfoProps = {}) {
                             <Image
                                 src={flags?.png || flags?.svg}
                                 alt={`Flag of ${name?.common}`}
-                                className="w-32 h-24 object-cover rounded-lg shadow-md border"
                                 width={320}
-                                height={240}
+                                height={213}
+                                className="rounded-lg shadow-md border object-cover"
                             />
                         </div>
                         <div className="text-center lg:text-left flex-grow">
@@ -167,9 +167,9 @@ export default function CountryInfo({ initialData }: CountryInfoProps = {}) {
                                 <Image
                                     src={coatOfArms.png}
                                     alt={`Coat of Arms of ${name?.common}`}
-                                    className="w-20 h-20 object-contain"
-                                    width={200}
-                                    height={200}
+                                    width={80}
+                                    height={0}
+                                    className="object-contain h-auto"
                                 />
                             </div>
                         )}
