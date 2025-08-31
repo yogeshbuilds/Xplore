@@ -17,6 +17,7 @@ export default function Home() {
             <Search page="index" />
           </div>
         </div>
+        <p className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-gray-600 text-center">type, click a suggestion or hit Enter</p>
       </main>
   );
 }
