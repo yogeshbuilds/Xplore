@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
+import { Country } from "@/types/country";
 
 export function SkeletonCards() {
     return (
@@ -20,30 +21,9 @@ export function SkeletonCards() {
     )
 }
 
-interface CountryProps {
-    countryData: {
-        name: {
-            common: string;
-            official: string;
-        };
-        capital: string[];
-        fifa: string;
-        currencies: {
-            [key: string]: { name: string; symbol: string };
-        };
-        flags: {
-            png: string;
-            alt: string;
-        };
-        region: string;
-        flag?: string; // emoji flag if available
-        population?: number;
-    };
-}
-
-export default function CountryCard({ countryData }: CountryProps) {
+export default function CountryCard({ countryData }: { countryData: Country }) {
     const currencyNames = Object.values(countryData?.currencies || {})
-        .map((c) => `${c?.name} (${c.symbol})`)
+        .map((c: any) => `${c?.name} (${c?.symbol})`)
         .filter(Boolean)
         .join(", ");
 

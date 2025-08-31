@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { type Country, type CountryApiResponse } from './country';
+import { type Country, type CountryApiResponse } from '../../../types/country';
 import Image from 'next/image';
 
 interface CountryInfoProps {

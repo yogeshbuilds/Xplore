@@ -1,19 +1,20 @@
 'use client'
 
 import CountryCard, { SkeletonCards } from "@/components/Card";
-import type { Country } from "@/components/Search";
-import type { FormEvent } from "react";
 import { lazy } from "react";
 import { httpHelper } from "@/lib/utils";
 import { Suspense, useEffect, useState } from "react";
-import useSearch from "@/zustand/store";
+import { useCount, useCountries } from "@/zustand/store";
+import { Country } from "@/types/country";
+import { useSearchParams } from "next/navigation";
 const Search = lazy(() => import('@/components/Search'));
 
 export default function SearchPage() {
-    const { query } = useSearch() as { query: string };
-    const [countries, setCountries] = useState<Country[]>([]);
+    const { countries, setCountries } = useCountries() as { countries: Country[], setCountries: (val: Country[]) => void };
+    const { visibleCount, setVisibleCount } = useCount() as { visibleCount: number, setVisibleCount: (c: number) => void };
     const [loading, setLoading] = useState(true);
-    const [visibleCount, setVisibleCount] = useState(12);
+    const params = useSearchParams();
+    const query = params.get('query');
 
     async function fetchCountries(query: string) {
         if (query) {
@@ -33,16 +34,8 @@ export default function SearchPage() {
         }
     }, []);
 
-    const formSubmit = (e: FormEvent) => {
-        e.preventDefault()
-        if (query) {
-            fetchCountries(query);
-            setVisibleCount(12); // Reset to show first 12 when searching
-        }
-    }
-
     const showMore = () => {
-        setVisibleCount(prev => Math.min(prev + 12, countries.length));
+        setVisibleCount(Math.min(visibleCount + 12, countries?.length));
     }
 
     return (
@@ -55,7 +48,7 @@ export default function SearchPage() {
                     </div>
                     <div className="w-[50%] p-2 text-white">
                         <Suspense fallback='loading'>
-                            <Search page="search" submitForm={formSubmit} />
+                            <Search page="search" />
                         </Suspense>
                     </div>
                     <div className="w-[20%]" />
