@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card";
 import Image from "next/image";
 import Link from "next/link";
-import { Country } from "@/types/country";
+import type { Country, Currency } from "@/types/country";
 
 export function SkeletonCards() {
     return (
@@ -23,7 +23,7 @@ export function SkeletonCards() {
 
 export default function CountryCard({ countryData }: { countryData: Country }) {
     const currencyNames = Object.values(countryData?.currencies || {})
-        .map((c: any) => `${c?.name} (${c?.symbol})`)
+        .map((c: Currency) => `${c?.name} (${c?.symbol})`)
         .filter(Boolean)
         .join(", ");
 

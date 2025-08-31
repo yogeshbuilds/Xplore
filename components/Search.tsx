@@ -11,7 +11,7 @@ import { type FormEvent, useEffect, useRef, useState } from "react";
 import { debouncer, httpHelper } from "@/lib/utils";
 import { useCount, useCountries } from "@/zustand/store";
 import { useRouter } from "next/navigation";
-import { Country } from "@/types/country";
+import type { Country } from "@/types/country";
 
 interface SearchProps {
     page: 'index' | 'search';

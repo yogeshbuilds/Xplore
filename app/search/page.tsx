@@ -5,11 +5,11 @@ import { lazy } from "react";
 import { httpHelper } from "@/lib/utils";
 import { Suspense, useEffect, useState } from "react";
 import { useCount, useCountries } from "@/zustand/store";
-import { Country } from "@/types/country";
+import type { Country } from "@/types/country";
 import { useSearchParams } from "next/navigation";
 const Search = lazy(() => import('@/components/Search'));
 
-export default function SearchPage() {
+function SearchPageContent() {
     const { countries, setCountries } = useCountries() as { countries: Country[], setCountries: (val: Country[]) => void };
     const { visibleCount, setVisibleCount } = useCount() as { visibleCount: number, setVisibleCount: (c: number) => void };
     const [loading, setLoading] = useState(true);
@@ -32,7 +32,8 @@ export default function SearchPage() {
         } else {
             setLoading(false);
         }
-    }, []);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [query]);
 
     const showMore = () => {
         setVisibleCount(Math.min(visibleCount + 12, countries?.length));
@@ -47,9 +48,7 @@ export default function SearchPage() {
                         <h1 className="text-3xl sm:text-4xl font-bold">Xplore</h1>
                     </div>
                     <div className="w-[50%] p-2 text-white">
-                        <Suspense fallback='loading'>
-                            <Search page="search" />
-                        </Suspense>
+                        <Search page="search" />
                     </div>
                     <div className="w-[20%]" />
                 </div>
@@ -84,4 +83,39 @@ export default function SearchPage() {
             </div>
         </div>
     )
+}
+
+function SearchPageFallback() {
+    return (
+        <div>
+            {/* Nav Bar Skeleton */}
+            <div className="w-full h-16 relative">
+                <div className="flex justify-between gap-[5%] w-full">
+                    <div className="w-[20%] p-2 text-center">
+                        <h1 className="text-3xl sm:text-4xl font-bold">Xplore</h1>
+                    </div>
+                    <div className="w-[50%] p-2">
+                        <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+                    </div>
+                    <div className="w-[20%]" />
+                </div>
+                <div className="bg-border -mx-1 h-px" />
+            </div>
+            <div className="container mx-auto px-2 py-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+                    {Array.from({ length: 8 }).map((_, idx) => (
+                        <SkeletonCards key={idx} />
+                    ))}
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export default function SearchPage() {
+    return (
+        <Suspense fallback={<SearchPageFallback />}>
+            <SearchPageContent />
+        </Suspense>
+    );
 }
